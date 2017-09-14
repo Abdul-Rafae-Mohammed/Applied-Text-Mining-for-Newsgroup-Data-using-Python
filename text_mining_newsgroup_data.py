@@ -9,7 +9,7 @@ import pandas as pd
 
 
 def convert_tag(tag):
-    """Convert the tag given by nltk.pos_tag to the tag used by wordnet.synsets"""
+    """Converts the tag given by nltk.pos_tag to the tag used by wordnet.synsets"""
     
     tag_dict = {'N': 'n', 'J': 'a', 'R': 'r', 'V': 'v'}
     try:
@@ -38,7 +38,6 @@ def doc_to_synsets(doc):
     """
     
 
-    # Your Code Here
     text13 = nltk.word_tokenize(doc)
     #WNlemma = nltk.WordNetLemmatizer()
     #text13 = [WNlemma.lemmatize(t) for t in text13]
@@ -58,7 +57,7 @@ def doc_to_synsets(doc):
 
 def similarity_score(s1, s2):
     """
-    Calculate the normalized similarity score of s1 onto s2
+    Calculates the normalized similarity score of s1 onto s2
 
     For each synset in s1, finds the synset in s2 with the largest similarity value.
     Sum of all of the largest similarity values and normalize this value by dividing it by the
@@ -78,7 +77,7 @@ def similarity_score(s1, s2):
     """
     
     
-    # Your Code Here
+    
     synset_arr = []
     largest_synset =[]
     for i in s1:
@@ -112,11 +111,8 @@ def document_path_similarity(doc1, doc2):
 
 # ### test_document_path_similarity
 # 
-# Use this function to check if doc_to_synsets and similarity_score are correct.
-# 
-# *This function should return the similarity score as a float.*
+# Checks if doc_to_synsets and similarity_score are correct.
 
-# In[49]:
 
 def test_document_path_similarity():
     doc1 = 'This is a function to test document_path_similarity.'
@@ -125,28 +121,20 @@ def test_document_path_similarity():
 test_document_path_similarity()
 
 
-# <br>
-# ___
+
 # `paraphrases` is a DataFrame which contains the following columns: `Quality`, `D1`, and `D2`.
 # 
 # `Quality` is an indicator variable which indicates if the two documents `D1` and `D2` are paraphrases of one another (1 for paraphrase, 0 for not paraphrase).
 
-# In[50]:
 
-# Use this dataframe for questions most_similar_docs and label_accuracy
 paraphrases = pd.read_csv('paraphrases.csv')
 paraphrases.head()
 
-
-# ___
-# 
 # ### most_similar_docs
 # 
 # Using `document_path_similarity`, find the pair of documents in paraphrases which has the maximum similarity score.
 # 
 # *This function should return a tuple `(D1, D2, similarity_score)`*
-
-# In[53]:
 
 D1_list = paraphrases['D1'].tolist()
 D2_list = paraphrases['D2'].tolist()
@@ -157,23 +145,21 @@ for i in D1_list:
         sim_list.append((i,j,document_path_similarity(i,j)))
 def most_similar_docs():
     
-    # Your Code Here
+  
     return sorted(sim_list, key=lambda tup: tup[2])[-1]
 most_similar_docs()
 
 
 # ### label_accuracy
 # 
-# Provide labels for the twenty pairs of documents by computing the similarity for each pair using `document_path_similarity`. Let the classifier rule be that if the score is greater than 0.75, label is paraphrase (1), else label is not paraphrase (0). Report accuracy of the classifier using scikit-learn's accuracy_score.
-# 
-# *This function should return a float.*
+# Provides labels for the twenty pairs of documents by computing the similarity for each pair using `document_path_similarity`. Let the classifier rule be that if the score is greater than 0.75, label is paraphrase (1), else label is not paraphrase (0). Report accuracy of the classifier using scikit-learn's accuracy_score.
+
 
 # In[61]:
 
 def label_accuracy():
     from sklearn.metrics import accuracy_score
 
-    # Your Code Here
     D1_list = paraphrases['D1'].tolist()
     D2_list = paraphrases['D2'].tolist()
     #print(len(D1_list))
@@ -194,11 +180,7 @@ def label_accuracy():
 label_accuracy()
 
 
-# ## Part 2 - Topic Modelling
-# 
-# For the second part of this assignment, you will use Gensim's LDA (Latent Dirichlet Allocation) model to model topics in `newsgroup_data`. You will first need to finish the code in the cell below by using gensim.models.ldamodel.LdaModel constructor to estimate LDA model parameters on the corpus, and save to the variable `ldamodel`. Extract 10 topics using `corpus` and `id_map`, and with `passes=25` and `random_state=34`.
-
-# In[3]:
+#Part-2
 
 import pickle
 import gensim
@@ -208,9 +190,9 @@ from sklearn.feature_extraction.text import CountVectorizer
 with open('newsgroups', 'rb') as f:
     newsgroup_data = pickle.load(f)
 
-# Use CountVectorizor to find three letter tokens, remove stop_words, 
-# remove tokens that don't appear in at least 20 documents,
-# remove tokens that appear in more than 20% of the documents
+# Using CountVectorizor to find three letter tokens, remove stop_words, 
+# removing tokens that don't appear in at least 20 documents,
+# removing tokens that appear in more than 20% of the documents
 vect = CountVectorizer(min_df=20, max_df=0.2, stop_words='english', 
                        token_pattern='(?u)\\b\\w\\w\\w+\\b')
 # Fit and transform
@@ -234,19 +216,13 @@ ldamodel = gensim.models.ldamodel.LdaModel(corpus, num_topics=10,id2word = id_ma
 
 # ### lda_topics
 # 
-# Using `ldamodel`, find a list of the 10 topics and the most significant 10 words in each topic. This should be structured as a list of 10 tuples where each tuple takes on the form:
-# 
-# `(9, '0.068*"space" + 0.036*"nasa" + 0.021*"science" + 0.020*"edu" + 0.019*"data" + 0.017*"shuttle" + 0.015*"launch" + 0.015*"available" + 0.014*"center" + 0.014*"sci"')`
-# 
-# for example.
-# 
-# *This function should return a list of tuples.*
+# Using `ldamodel`, find a list of the 10 topics and the most significant 10 words in each topic.
+
 
 # In[22]:
 
 def lda_topics():
     
-    # Your Code Here
     
     topic_list = ldamodel.print_topics(num_topics=10, num_words=10)
     return topic_list
@@ -255,11 +231,8 @@ lda_topics()
 
 # ### topic_distribution
 # 
-# For the new document `new_doc`, find the topic distribution. Remember to use vect.transform on the the new doc, and Sparse2Corpus to convert the sparse matrix to gensim corpus.
-# 
-# *This function should return a list of tuples, where each tuple is `(#topic, probability)`*
+# For the new document `new_doc`, finding the topic distribution. using vect.transform on the the new doc, and Sparse2Corpus to convert the sparse matrix to gensim corpus.
 
-# In[16]:
 
 new_doc = ["\n\nIt's my understanding that the freezing will start to occur because of the\ngrowing distance of Pluto and Charon from the Sun, due to it's\nelliptical orbit. It is not due to shadowing effects. \n\n\nPluto can shadow Charon, and vice-versa.\n\nGeorge Krumins\n-- "]
 
@@ -278,19 +251,4 @@ def topic_distribution():
 topic_distribution()
 
 
-# ### topic_names
-# 
-# From the list of the following given topics, assign topic names to the topics you found. If none of these names best matches the topics you found, create a new 1-3 word "title" for the topic.
-# 
-# Topics: Health, Science, Automobiles, Politics, Government, Travel, Computers & IT, Sports, Business, Society & Lifestyle, Religion, Education.
-# 
-# *This function should return a list of 10 strings.*
-
-# In[ ]:
-
-def topic_names():
-    
-    # Your Code Here
-    
-    return ['Education','Science','Computers & IT','Religion','Automobiles','Sports','Health','Society & Lifestyle','Computers & IT','Science']
 
